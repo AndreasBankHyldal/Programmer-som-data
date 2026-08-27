@@ -41,7 +41,7 @@ let rec evalOpe (e : expr) : int =
         match ope with
         | "+" -> i1 + i2
         | "-" -> i1 - i2
-        | "*" -> i1 * i2
+        | "*" -> i1 *  i2
         | "max" -> if i1 > i2 then i1 else i2
         | "min" -> if i1 < i2 then i1 else i1
         | "=="  -> if i1 = i2 then 1 else 0  
