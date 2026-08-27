@@ -91,44 +91,46 @@ let example3v = eval example3 env;;   (* 11 *)
 let example4v = eval example4 env;;   (* 0  *)
 let example5v = eval example5 env;;   (* 11 *)
 
-(* The two interpreters must agree on every expression *)
-let agree0 = eval example0 env = evalOpe example0 env;;
-let agree5 = eval example5 env = evalOpe example5 env;;
+type aexpr = 
+    | CstI of int
+    | Var of string
+    | Add of aexpr * aexprsj
+    | Mul of aexpr * aexpr
+    | Sub of aexpr * aexpr
+
+(* 1.2 (ii) *)
+let e4 = Sub(Var "v", Add(Var "w", Var "z"))
+
+let e5 = Mul(CstI 2, Sub(Var "v", Add(Var "w", Var "z")))
+
+let e6 = Add(Var "x", Add(Var "y", Add(Var "z", Var "v")))
 
 
-(* Changing the meaning of subtraction: negative results become zero *)
+let rec fmt (a : aexpr) : string = 
+    match a with
+    | CstI i -> i.toString()
+    | Var x -> x 
+    | Add (a1, a2) -> "(" + fmt a1 + " + " + fmt a2 + ")"
+    | Mul (a1, a2) -> "(" + fmt a1 + " * " + fmt a2 + ")"
+    | Sub (a1, a2) -> "(" + fmt a1 + " - " + fmt a2 + ")"
 
-let rec evalm e (env : (string * int) list) : int =
-    match e with
-    | CstI i            -> i
-    | Var x             -> lookup env x
-    | Prim("+", e1, e2) -> evalm e1 env + evalm e2 env
-    | Prim("*", e1, e2) -> evalm e1 env * evalm e2 env
-    | Prim("-", e1, e2) -> 
-      let res = evalm e1 env - evalm e2 env
-      if res < 0 then 0 else res 
-    | If(e1, e2, e3)    -> if evalm e1 env <> 0 then evalm e2 env else evalm e3 env
-    | Prim _            -> failwith "unknown primitive";;
-
-let e4v = evalm (Prim("-", CstI 10, CstI 27)) env;;
-
-
-(* The pretty printer: no environment needed, a variable's name is
-   independent of its value *)
-
-let rec fmt (e : expr) : string =
-  match e with
-  | CstI i              -> i.ToString()
-  | Var x               -> x
-  | Prim("+", e1, e2)   -> "(" + fmt e1 + " + " + fmt e2 + ")"
-  | Prim("*", e1, e2)   -> "(" + fmt e1 + " * " + fmt e2 + ")"
-  | Prim("-", e1, e2)   -> "(" + fmt e1 + " - " + fmt e2 + ")"
-  | Prim("max", e1, e2) -> "max(" + fmt e1 + ", " + fmt e2 + ")"
-  | Prim("min", e1, e2) -> "min(" + fmt e1 + ", " + fmt e2 + ")"
-  | Prim("==", e1, e2)  -> "(" + fmt e1 + " == " + fmt e2 + ")"
-  | If(e1, e2, e3)      -> "(if " + fmt e1 + " then " + fmt e2 + " else " + fmt e3 + ")"
-  | Prim _              -> failwith "fmt: unknown primitive";;
-
-let fmt0 = fmt example0;;
-let fmt3 = fmt example3;;
-let fmt5 = fmt example5;;
+let rec simplify (a : aexpr) : aexpr = 
+    match a with 
+    | Add(a1, a2) -> 
+        match a1,a2 with 
+        | 0 , a2 -> a2
+        | a1 , 0 -> a1
+        | _ -> Add(simplify a1, simplify a2)
+    | Sub(a1,a2) -> 
+        match a1,a2 with 
+        | a1 , 0 -> a1
+        | a1 , a2 when a1 = a2 -> 0
+        | _ -> Sub(simplify a1, simplify a2)
+    | Mul(a1,a2) -> 
+        match a1,a2 with 
+        | a1 , 1 -> a1
+        | 1 , a2 -> a2
+        | 0 , a2 -> 0
+        | a1 , 0 -> 0
+        | _ -> Mul(simplify a1, simplify a2)
+   
