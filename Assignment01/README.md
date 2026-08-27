@@ -4,4 +4,11 @@ Exercise 1.1
 (iii) We added an evalOpe function that follows the same principles as the original eval function to evaluate the arguments of a primitive
 before branching out on the operator.
 (iv) We added if to the type expr
-(v) 
+(v) We added both If to the expr type that takes three expressions, and then we added the case to the eval function
+
+Exercise 1.2
+(i)
+(ii)
+(iii)
+(iv)
+(v)
