@@ -6,7 +6,7 @@ module Intro1
 
 type expr = 
   | CstI of int
-  | Prim of string * expr * expr;;
+  | Prim of string * expr * expr
   | If of expr * expr * expr;;
 
 let e0 = Prim("+", CstI 2, Prim("*", CstI 3, CstI 4))
@@ -26,12 +26,13 @@ let rec eval (e : expr) : int =
     | Prim("+", e1, e2) -> eval e1 + eval e2
     | Prim("*", e1, e2) -> eval e1 * eval e2
     | Prim("-", e1, e2) -> eval e1 - eval e2
-    | Prim("max", e1, e2) -> if eval e1 > eval e2 then eval e1 else if eval e1 < eval e2 then eval e2 else failwith "equal expressions" 
-    | Prim("min", e1, e2) -> if eval e1 < eval e2 then eval e1 else if eval e1 > eval e2 then eval e2 else failwith "equal expressions" 
+    | Prim("max", e1, e2) -> if eval e1 > eval e2 then eval e1 else eval e2
+    | Prim("min", e1, e2) -> if eval e1 < eval e2 then eval e1 else eval e2  
     | Prim("==", e1, e2) -> if eval e1 = eval e2 then 1 else 0
-    | If (e1, e2, e3) -> 
+    | If (e1, e2, e3) -> if eval e1 <> 0 then eval e2 else eval e3
+    | Prim _ -> failwith "unknown primitive"
 
-let rec evalOpe e (env : (string * int) list) : int =
+let rec evalOpe (e : expr) : int =
     match e with
     | CstI i -> i
     | Prim(ope, e1, e2) -> 
@@ -41,9 +42,11 @@ let rec evalOpe e (env : (string * int) list) : int =
         | "+" -> i1 + i2
         | "-" -> i1 - i2
         | "*" -> i1 * i2
-        | "max" -> if i1 > i2 then i1 else if i2 > i1 then i2 else failwith "equal expressions"  
-        | "min" -> if i1 < i2 then i1 else if i2 < i1 then i2 else failwith "equal expressions"  
+        | "max" -> if i1 > i2 then i1 else i2
+        | "min" -> if i1 < i2 then i1 else i1
         | "=="  -> if i1 = i2 then 1 else 0  
+   | If (e1, e2, e3) -> if eval e1 <> 0 then eval e2 else eval e3
+   | Prim _ -> failwith "unknown primitive"
   
 let e0v = eval e0;;
 let e1v = eval e1;;
