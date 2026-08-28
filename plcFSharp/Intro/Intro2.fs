@@ -94,7 +94,7 @@ let example5v = eval example5 env;;   (* 11 *)
 type aexpr = 
     | CstI of int
     | Var of string
-    | Add of aexpr * aexprsj
+    | Add of aexpr * aexpr
     | Mul of aexpr * aexpr
     | Sub of aexpr * aexpr
 
@@ -118,19 +118,30 @@ let rec simplify (a : aexpr) : aexpr =
     match a with 
     | Add(a1, a2) -> 
         match a1,a2 with 
-        | 0 , a2 -> a2
-        | a1 , 0 -> a1
+        | CstI 0 , a2 -> a2
+        | a1 , CstI 0 -> a1
         | _ -> Add(simplify a1, simplify a2)
     | Sub(a1,a2) -> 
         match a1,a2 with 
-        | a1 , 0 -> a1
-        | a1 , a2 when a1 = a2 -> 0
+        | a1 , CstI 0 -> a1
+        | a1 , a2 when a1 = a2 -> CstI 0
         | _ -> Sub(simplify a1, simplify a2)
     | Mul(a1,a2) -> 
         match a1,a2 with 
-        | a1 , 1 -> a1
-        | 1 , a2 -> a2
-        | 0 , a2 -> 0
-        | a1 , 0 -> 0
+        | a1 , CstI 1 -> a1
+        | CstI 1 , a2 -> a2
+        | CstI 0 , a2 -> CstI 0
+        | a1 , CstI 0 -> CstI 0
         | _ -> Mul(simplify a1, simplify a2)
    
+let rec diff (x : string) (a : aexpr) : aexpr =
+	match a with
+	| CstI _ -> CstI 0
+	| Var y -> if y = x then CstI 1 else CstI 0
+	| Add(a1, a2) -> Add(diff x a1, diff x a2)
+	| Sub(a1, a2) -> Sub(diff x a1, diff x a2)
+	| Mul(a1, a2) -> 
+		Add(
+			Mul(diff x a1, a2),
+			Mul(a1, diff x a2)
+		)
