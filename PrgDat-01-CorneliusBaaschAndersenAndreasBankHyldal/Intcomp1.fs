@@ -7,7 +7,6 @@
 
 module Intcomp1
 
-(* 2.1 *)
 type expr = 
   | CstI of int
   | Var of string
@@ -47,7 +46,6 @@ let rec lookup env x =
     | []        -> failwith (x + " not found")
     | (y, v)::r -> if x=y then v else lookup r x;;
 
-(* 2.1 *)
 let rec eval e (env : (string * int) list) : int =
     match e with
     | CstI i            -> i
@@ -213,7 +211,6 @@ let rec minus (xs, ys) =
 
 (* Find all variables that occur free in expression e *)
 
-(* 2.2 *)
 let rec freevars e : string list =
     match e with
     | CstI i -> []
@@ -252,7 +249,6 @@ let rec getindex vs x =
 
 (* Compiling from expr to texpr *)
 
-(* 2.3 *)
 let rec tcomp (e : expr) (cenv : string list) : texpr =
     match e with
     | CstI i -> TCstI i
