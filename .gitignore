@@ -17,6 +17,12 @@ artifacts/
 .ionide/
 .fsdocs/
 
+# FsLexYacc generated sources
+*Lex.fs
+*Lex.fsi
+*Par.fs
+*Par.fsi
+
 # Rider / JetBrains (per-user, not shared config)
 .idea/**/workspace.xml
 .idea/**/tasks.xml
