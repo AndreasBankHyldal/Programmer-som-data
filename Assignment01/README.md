@@ -7,8 +7,14 @@ before branching out on the operator.
 (v) We added both If to the expr type that takes three expressions, and then we added the case to the eval function
 
 Exercise 1.2
-(i)
-(ii)
-(iii)
-(iv)
-(v)
+(i) We declared the aexpr datatype with constructors for constants, variables, addition, multiplication, and subtraction
+(ii) We wrote representations of the three arithmetic expressions using the aexpr constructors
+(iii) We added a fmt function that converts an aexpr into a formatted string
+(iv) We added a simplify function that recursively simplifies arithmetic expressions using pattern matching
+(v) We added a diff function that performs symbolic differentiation, including the product rule for multiplication
+
+Exercise 1.4
+(i) We created a Java class hierarchy for arithmetic expressions and added toString methods for formatting them
+(ii) We created and printed three arithmetic expressions using the new classes
+(iii) We added eval methods that evaluate expressions using a map as the environment
+(iv) We added simplify methods that recursively perform the same algebraic simplifications as in Exercise 1.2
