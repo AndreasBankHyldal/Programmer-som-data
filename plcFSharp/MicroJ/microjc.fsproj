@@ -21,7 +21,9 @@
     <Compile Include="Machine.fs" />
     <Compile Include="Contcomp.fs" />
     <Compile Include="Parse.fs" />
-    <Compile Include="MicroJC.fs" />    
+    <Compile Include="MicroJC.fs" />
+    <None Include="JavaEx/cmd.fsx" />
+    <None Include="JavaEx/test.fsx" />
   </ItemGroup>
 
   <ItemGroup>

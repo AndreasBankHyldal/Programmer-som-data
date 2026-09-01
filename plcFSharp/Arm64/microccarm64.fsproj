@@ -20,6 +20,8 @@
     <Compile Include="Arm64Comp.fs" />
     <Compile Include="ParseAndComp.fs" />
     <Compile Include="MicroCCArm64.fs" />    
+    <None Include="Arm64Ex/cmd.fsx" />
+    <None Include="Arm64Ex/test.fsx" />
   </ItemGroup>
 
     <ItemGroup>

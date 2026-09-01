@@ -23,7 +23,12 @@
     <Compile Include="Machine.fs" />
     <Compile Include="Contcomp.fs" />
     <Compile Include="Parse.fs" />
-    <Compile Include="MicroSMLC.fs" />    
+    <Compile Include="MicroSMLC.fs" />
+    <None Include="SmlEx/cmd.fsx" />
+    <None Include="SmlEx/ex09.fsx" />
+    <None Include="SmlEx/polyRecursive.fsx" />
+    <None Include="SmlEx/queens.fsx" />
+    <None Include="SmlEx/test.fsx" />
   </ItemGroup>
 
   <ItemGroup>

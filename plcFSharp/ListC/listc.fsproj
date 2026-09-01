@@ -18,7 +18,10 @@
     <Compile Include="Parse.fs" />
     <Compile Include="Machine.fs" />
     <Compile Include="Comp.fs" />
-    <Compile Include="ListCC.fs" />    
+    <Compile Include="ParseAndComp.fs" />
+    <Compile Include="ListCC.fs" />
+    <None Include="ListcEx/cmd.fsx" />
+    <None Include="ListcEx/test.fsx" />
   </ItemGroup>
 
   <ItemGroup>
