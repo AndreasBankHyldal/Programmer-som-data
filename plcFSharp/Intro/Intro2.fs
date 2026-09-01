@@ -108,40 +108,41 @@ let e6 = Add(Var "x", Add(Var "y", Add(Var "z", Var "v")))
 
 let rec fmt (a : aexpr) : string = 
     match a with
-    | CstI i -> i.toString()
+    | CstI i -> string i
     | Var x -> x 
     | Add (a1, a2) -> "(" + fmt a1 + " + " + fmt a2 + ")"
     | Mul (a1, a2) -> "(" + fmt a1 + " * " + fmt a2 + ")"
     | Sub (a1, a2) -> "(" + fmt a1 + " - " + fmt a2 + ")"
 
-let rec simplify (a : aexpr) : aexpr = 
-    match a with 
-    | Add(a1, a2) -> 
-        match a1,a2 with 
-        | CstI 0 , a2 -> a2
-        | a1 , CstI 0 -> a1
-        | _ -> Add(simplify a1, simplify a2)
-    | Sub(a1,a2) -> 
-        match a1,a2 with 
-        | a1 , CstI 0 -> a1
-        | a1 , a2 when a1 = a2 -> CstI 0
-        | _ -> Sub(simplify a1, simplify a2)
-    | Mul(a1,a2) -> 
-        match a1,a2 with 
-        | a1 , CstI 1 -> a1
-        | CstI 1 , a2 -> a2
-        | CstI 0 , a2 -> CstI 0
-        | a1 , CstI 0 -> CstI 0
-        | _ -> Mul(simplify a1, simplify a2)
-   
+let rec simplify (a : aexpr) : aexpr =
+    match a with
+    | CstI _ | Var _ -> a
+    | Add(a1, a2) ->
+        (match simplify a1, simplify a2 with
+         | CstI 0, s2 -> s2
+         | s1, CstI 0 -> s1
+         | s1, s2     -> Add(s1, s2))
+    | Sub(a1, a2) ->
+        (match simplify a1, simplify a2 with
+         | s1, CstI 0          -> s1
+         | s1, s2 when s1 = s2 -> CstI 0
+         | s1, s2              -> Sub(s1, s2))
+    | Mul(a1, a2) ->
+        (match simplify a1, simplify a2 with
+         | CstI 0, _  -> CstI 0
+         | _, CstI 0  -> CstI 0
+         | CstI 1, s2 -> s2
+         | s1, CstI 1 -> s1
+         | s1, s2     -> Mul(s1, s2))
+
 let rec diff (x : string) (a : aexpr) : aexpr =
-	match a with
-	| CstI _ -> CstI 0
-	| Var y -> if y = x then CstI 1 else CstI 0
-	| Add(a1, a2) -> Add(diff x a1, diff x a2)
-	| Sub(a1, a2) -> Sub(diff x a1, diff x a2)
-	| Mul(a1, a2) -> 
-		Add(
-			Mul(diff x a1, a2),
-			Mul(a1, diff x a2)
-		)
+    match a with
+    | CstI _ -> CstI 0
+    | Var y -> if y = x then CstI 1 else CstI 0
+    | Add(a1, a2) -> Add(diff x a1, diff x a2)
+    | Sub(a1, a2) -> Sub(diff x a1, diff x a2)
+    | Mul(a1, a2) -> 
+        Add(
+            Mul(diff x a1, a2),
+            Mul(a1, diff x a2)
+        )

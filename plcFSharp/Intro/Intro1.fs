@@ -43,10 +43,10 @@ let rec evalOpe (e : expr) : int =
         | "-" -> i1 - i2
         | "*" -> i1 *  i2
         | "max" -> if i1 > i2 then i1 else i2
-        | "min" -> if i1 < i2 then i1 else i1
-        | "=="  -> if i1 = i2 then 1 else 0  
-   | If (e1, e2, e3) -> if eval e1 <> 0 then eval e2 else eval e3
-   | Prim _ -> failwith "unknown primitive"
+        | "min" -> if i1 < i2 then i1 else i2
+        | "=="  -> if i1 = i2 then 1 else 0
+        | _     -> failwith ("unknown primitive: " + ope)
+    | If(e1, e2, e3) -> if evalOpe e1 <> 0 then evalOpe e2 else evalOpe e3
   
 let e0v = eval e0;;
 let e1v = eval e1;;
@@ -72,7 +72,8 @@ let rec evalm (e : expr) : int =
     | Prim("*", e1, e2) -> evalm e1 * evalm e2
     | Prim("-", e1, e2) -> 
       let res = evalm e1 - evalm e2
-      if res < 0 then 0 else res 
+      if res < 0 then 0 else res
+    | If(e1, e2, e3)    -> if evalm e1 <> 0 then evalm e2 else evalm e3
     | Prim _            -> failwith "unknown primitive";;
 
 
@@ -86,5 +87,6 @@ let rec fmt (e : expr) : string =
   | Prim("+", e1, e2) -> "(" + fmt e1 + "+" + fmt e2 + ")"
   | Prim("*", e1, e2) -> "(" + fmt e1 + "*" + fmt e2 + ")"
   | Prim("-", e1, e2) -> "(" + fmt e1 + "-" + fmt e2 + ")"
+  | If(e1, e2, e3)    -> "(" + fmt e1 + " ? " + fmt e2 + " : " + fmt e3 + ")"
   | Prim _            -> failwith "fmt: unknown primitive";;
   
