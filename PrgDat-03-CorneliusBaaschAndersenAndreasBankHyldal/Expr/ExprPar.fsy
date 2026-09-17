@@ -14,6 +14,7 @@
 %token IF THEN ELSE
 %token EOF
 
+%left ELSE
 %left MINUS PLUS        /* lowest precedence  */
 %left TIMES             /* highest precedence */
 
