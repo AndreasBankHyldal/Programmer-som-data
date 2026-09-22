@@ -17,7 +17,6 @@
 %token LPAR RPAR
 %token EOF
 
-
 %left ELSE
 %left OR
 %left AND

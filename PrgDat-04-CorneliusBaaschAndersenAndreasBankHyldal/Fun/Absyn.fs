@@ -1,0 +1,14 @@
+(* Fun/Absyn.fs * Abstract syntax for micro-ML, a functional language *)
+
+module Absyn
+
+type expr = 
+  | CstI of int
+  | CstB of bool
+  | Var of string
+  | Let of string * expr * expr
+  | Prim of string * expr * expr
+  | If of expr * expr * expr
+(* Exercise 4.3: functions have one or more parameters and arguments. *)
+  | Letfun of string * string list * expr * expr
+  | Call of expr * expr list

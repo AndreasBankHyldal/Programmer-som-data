@@ -69,4 +69,3 @@ and SkipComment = parse
                       SkipComment lexbuf }
    | eof            { failwith "Lexer error: unterminated comment" }
    | _              { SkipComment lexbuf }
-

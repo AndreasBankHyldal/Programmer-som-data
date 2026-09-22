@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FsLexYacc" Version="11.3.0" />
+        <PackageReference Include="FsLexYacc.Runtime" Version="11.3.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="Absyn.fs" />
+        <Compile Include="FunPar.fs" />
+        <Compile Include="FunLex.fs" />
+        <Compile Include="Parse.fs" />
+        <Compile Include="Fun.fs" />
+        <Compile Include="HigherFun.fs" />
+        <Compile Include="ParseAndRun.fs" />
+        <Compile Include="ParseAndRunHigher.fs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <FsYacc Include="FunPar.fsy">
+            <OtherFlags>--module FunPar</OtherFlags>
+        </FsYacc>
+
+        <FsLex Include="FunLex.fsl">
+            <OtherFlags>--unicode</OtherFlags>
+        </FsLex>
+    </ItemGroup>
+</Project>
