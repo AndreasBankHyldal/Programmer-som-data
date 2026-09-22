@@ -85,6 +85,8 @@ let rec eval (e : expr) (env : value env) : int =
 
       | _ ->
         failwith "eval Call: not a function"
+    | Fun _ ->
+      failwith "eval: anonymous functions require the higher-order evaluator"
 
     | Call _ ->
       failwith "eval Call: not first-order function"

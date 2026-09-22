@@ -12,3 +12,4 @@ type expr =
 (* Exercise 4.3: functions have one or more parameters and arguments. *)
   | Letfun of string * string list * expr * expr
   | Call of expr * expr list
+  | Fun of string * expr

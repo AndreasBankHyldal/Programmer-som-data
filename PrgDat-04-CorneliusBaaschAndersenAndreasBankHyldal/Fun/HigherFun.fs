@@ -14,6 +14,7 @@ let rec lookup env x =
 type value =
   | Int of int
   | Closure of string * string list * expr * value env
+  | Clos of string * expr * value env
 
 let rec eval (e : expr) (env : value env) : value =
     match e with
@@ -45,17 +46,54 @@ let rec eval (e : expr) (env : value env) : value =
       let closure = Closure(f, parameters, fBody, env)
       eval letBody ((f, closure) :: env)
     | Call(eFun, arguments) ->
-      match eval eFun env with
-      | Closure(f, parameters, fBody, fDeclEnv) as fClosure ->
-        if List.length parameters <> List.length arguments then
-          failwithf "eval Call: %s expects %d argument(s), but got %d"
-            f (List.length parameters) (List.length arguments)
+      let functionValue = eval eFun env
+      let argumentValues =
+        List.map (fun argument -> eval argument env) arguments
 
-        let argumentValues = List.map (fun argument -> eval argument env) arguments
-        let parameterBindings = List.zip parameters argumentValues
-        let fBodyEnv = parameterBindings @ ((f, fClosure) :: fDeclEnv)
-        eval fBody fBodyEnv
-      | _ ->
-        failwith "eval Call: not a function"
+      let rec apply fValue remainingArguments =
+        match fValue with
+        | Closure(f, parameters, fBody, fDeclEnv) as fClosure ->
+          if List.length remainingArguments < List.length parameters then
+            failwithf "eval Call: %s expects %d argument(s), but got %d"
+              f (List.length parameters) (List.length remainingArguments)
+
+          let usedArguments, extraArguments =
+            List.splitAt (List.length parameters) remainingArguments
+
+          let parameterBindings =
+            List.zip parameters usedArguments
+
+          let fBodyEnv =
+            parameterBindings @ ((f, fClosure) :: fDeclEnv)
+
+          let result = eval fBody fBodyEnv
+
+          if List.isEmpty extraArguments then
+            result
+          else
+            apply result extraArguments
+
+        | Clos(parameter, body, declarationEnv) ->
+          match remainingArguments with
+          | argumentValue :: extraArguments ->
+            let bodyEnv =
+              (parameter, argumentValue) :: declarationEnv
+
+            let result = eval body bodyEnv
+
+            if List.isEmpty extraArguments then
+              result
+            else
+              apply result extraArguments
+
+          | [] ->
+            failwith "eval Call: anonymous function expects an argument"
+
+        | _ ->
+          failwith "eval Call: not a function"
+
+      apply functionValue argumentValues
+    | Fun(parameter, body) ->
+      Clos(parameter, body, env)
 
 let run e = eval e []
