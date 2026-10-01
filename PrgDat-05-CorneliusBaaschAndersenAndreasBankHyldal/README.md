@@ -58,3 +58,11 @@ Prog                                                   // declaration: the whole
            (Expr                                       // statement: expression statement  println;
               (Prim1 ("println", CstI 10)))])]         // expression: print char 10 (newline)
 ```
+
+### Exercise 7.2
+
+We have written the programs included in the folder. There is no errors if freq is to small, it just gives a wrong answer.
+
+### Exercise 7.3
+
+We have changed the while loops to for loops, and extended CLex and CPar to handle the for loops.
