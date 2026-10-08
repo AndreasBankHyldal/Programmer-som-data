@@ -13,3 +13,9 @@ We have edittet CLex.fsl and CPar.fsy. We have extended CLex with the token rule
 (ii) We compiled `ex03.c` and `ex05.c`; their annotated symbolic bytecode is in `ex3bytecode.txt` and `ex5bytecode.txt`. With argument 10, they print `0 1 2 3 4 5 6 7 8 9` and `100 10`, respectively. In `ex05`, the inner `r` uses a separate stack slot, allocated by `INCSP 1` and discarded when its block ends.
 
 `ex3trace.txt` shows execution with argument 4. The stack frame contains the return address, saved base pointer, `n`, and `i`; temporary operands appear above them. `LDI` reads variables, `STI` updates them, and `LT`/`IFNZRO` implement the loop, which prints `0 1 2 3` before returning.
+
+### Exercise 8.3
+
+We added `PreInc` and `PreDec` cases to `cExpr` in `Comp.fs`. The compiler computes the address once, duplicates it, loads the value, adds/subtracts 1, and stores the result. `STI` leaves the updated value on the stack, so nested expressions work without evaluating side effects twice.
+
+`ex83.c` checks both operators, including `++arr[++i]` and `--arr[--i]`. The output confirms that `i` changes only once per expression and only the selected array element is updated.
