@@ -19,3 +19,9 @@ We have edittet CLex.fsl and CPar.fsy. We have extended CLex with the token rule
 We added `PreInc` and `PreDec` cases to `cExpr` in `Comp.fs`. The compiler computes the address once, duplicates it, loads the value, adds/subtracts 1, and stores the result. `STI` leaves the updated value on the stack, so nested expressions work without evaluating side effects twice.
 
 `ex83.c` checks both operators, including `++arr[++i]` and `--arr[--i]`. The output confirms that `i` changes only once per expression and only the selected array element is updated.
+
+### Exercise 8.4
+
+We compiled `ex08.c` and `ex13.c` and studied their symbolic bytecode. The loop in `ex08` executes 17 instructions per iteration, compared with 4 in `prog1`, because it repeatedly calculates the variable's address and loads/stores its value. The handwritten loop keeps its counter directly on the stack.
+
+In `ex13`, the while loop surrounds an if statement whose `&&` and `||` operators use short-circuit jumps. The compiler introduces several labels and intermediate Boolean results before deciding whether to print `y`, resulting in extra jumps and no-op block cleanup instructions.
