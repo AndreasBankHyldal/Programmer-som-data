@@ -5,3 +5,11 @@ We have edittet Absyn.fs and Interp.fs to extend the two types in the eval funct
 ### Exercise 7.5
 
 We have edittet CLex.fsl and CPar.fsy. We have extended CLex with the token rules on line 54, and we have extended CPar.fsy with the tokens (line 21), precedence (line 32) and extended at line 146 in AtExprNotAccess aswell.
+
+### Exercise 8.1
+
+(i) We compiled and ran `ex11.c` with argument 8, producing 92 solutions to the eight-queens problem.
+
+(ii) We compiled `ex03.c` and `ex05.c`; their annotated symbolic bytecode is in `ex3bytecode.txt` and `ex5bytecode.txt`. With argument 10, they print `0 1 2 3 4 5 6 7 8 9` and `100 10`, respectively. In `ex05`, the inner `r` uses a separate stack slot, allocated by `INCSP 1` and discarded when its block ends.
+
+`ex3trace.txt` shows execution with argument 4. The stack frame contains the return address, saved base pointer, `n`, and `i`; temporary operands appear above them. `LDI` reads variables, `STI` updates them, and `LT`/`IFNZRO` implement the loop, which prints `0 1 2 3` before returning.

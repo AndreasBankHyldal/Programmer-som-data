@@ -1,0 +1,28 @@
+    LDARGS 1                            // Load command-line argument n
+    CALL 1 L1                           // main(n)
+    STOP                                // End execution
+
+L1: INCSP 1                             // int i;
+
+    GETBP; CSTI 1; ADD                   // Address of i
+    CSTI 0; STI; INCSP -1                // i = 0;
+
+    GOTO L3                             // Check condition before first iteration
+
+L2: GETBP; CSTI 1; ADD; LDI              // Read i
+    PRINTI; INCSP -1                    // print i;
+
+    GETBP; CSTI 1; ADD                   // Address of assignment target i
+    GETBP; CSTI 1; ADD; LDI              // Read current i
+    CSTI 1; ADD                         // i + 1
+    STI; INCSP -1                       // i = i + 1;
+
+    INCSP 0                             // End loop body: no local declarations
+
+L3: GETBP; CSTI 1; ADD; LDI              // Read i
+    GETBP; CSTI 0; ADD; LDI              // Read n
+    LT                                  // i < n
+    IFNZRO L2                           // Repeat body while condition is true
+
+    INCSP -1                            // End main's block: discard i
+    RET 0                               // Return from main
