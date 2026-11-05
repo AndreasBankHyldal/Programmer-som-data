@@ -19,6 +19,7 @@ let nl = CstI 10
 %token EQ NE GT LT GE LE
 %token NOT SEQOR SEQAND
 %token LPAR RPAR LBRACE RBRACE LBRACK RBRACK SEMI QMARK COLON COMMA ASSIGN AMP PREINC PREDEC 
+%token SWITCH CASE
 %token EOF
 
 %right ASSIGN QMARK            /* lowest precedence */
@@ -102,6 +103,8 @@ StmtM:  /* No unbalanced if-else */
   | WHILE LPAR Expr RPAR StmtM          { While($3, $5)        }
   | FOR LPAR Expr SEMI Expr SEMI Expr RPAR StmtM
     { Block [Stmt (Expr $3); Stmt (While ($5, Block [Stmt $9; Stmt (Expr $7)]))] }
+  | SWITCH LPAR Expr RPAR LBRACE Cases RBRACE
+    { Switch($3, $6) }
 ;
 
 StmtU:
@@ -111,7 +114,15 @@ StmtU:
   | FOR LPAR Expr SEMI Expr SEMI Expr RPAR StmtU
     { Block [Stmt (Expr $3); Stmt (While ($5, Block [Stmt $9; Stmt (Expr $7)]))] }
 ;
+Cases:
+    /* empty */                         { [] }
+  | CASE CaseValue COLON Block Cases    { ($2, $4) :: $5 }
+;
 
+CaseValue:
+    CSTINT                              { $1 }
+  | MINUS CSTINT                        { - $2 }
+;
 Expr: 
     Access                              { Access $1           }
   | ExprNotAccess                       { $1                  }

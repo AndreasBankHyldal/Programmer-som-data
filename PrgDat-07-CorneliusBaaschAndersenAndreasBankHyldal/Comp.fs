@@ -143,6 +143,29 @@ let rec cStmt stmt (varEnv : varEnv) (funEnv : funEnv) : instr list =
             (fdepthr, code1 @ coder)
       let (fdepthend, code) = loop stmts varEnv
       code @ [INCSP(snd varEnv - fdepthend)]  (* Remove variables, declared in the block, from the stack *)
+    | Switch (selector, cases) -> 
+      let labend = newLabel()
+
+      // The retained selector occupies one stack slot.
+      let caseEnv : varEnv = (fst varEnv, snd varEnv + 1)
+
+      let rec compileCases cases =
+          match cases with
+          | [] ->
+              []
+          | [(value, body)] ->
+              [DUP; CSTI value; EQ; IFZERO labend]
+              @ cStmt body caseEnv funEnv
+          | (value, body) :: rest ->
+              let labnext = newLabel()
+              [DUP; CSTI value; EQ; IFZERO labnext]
+              @ cStmt body caseEnv funEnv
+              @ [GOTO labend; Label labnext]
+              @ compileCases rest
+
+      cExpr selector varEnv funEnv
+      @ compileCases cases
+      @ [Label labend; INCSP -1]
     | Return None -> 
       [RET (snd varEnv - 1)]
     | Return (Some e) -> 
