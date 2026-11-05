@@ -6,12 +6,17 @@
 	// Method begins at RVA 0x20b8
 	// Header size: 12
 	// Code size: 57 (0x39)
+    // Argument 0 = arr
+    // Local 0 = i
+    // Local 1 = least
+    // Local 2 = tmp
+    // Local 3 = j
 	.maxstack 4
 	.locals init (
-		[0] int32,
-		[1] int32,    
-		[2] int32,
-		[3] int32
+		[0] int32,       
+		[1] int32,       
+		[2] int32,       
+		[3] int32        
 	)
 
 	IL_0000: ldc.i4.0
