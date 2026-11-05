@@ -1,0 +1,76 @@
+public static void SelectionSort(int[]);
+descriptor: ([I)V
+flags: (0x0009) ACC_PUBLIC, ACC_STATIC
+Code:
+  stack=4, locals=4, args_size=1
+  
+    // Local 0 = arr
+    // Local 1 = i
+    // Local 2 = least
+    // Local 3 = j during the inner loop, then tmp during the sawp
+    
+     0: iconst_0                // Push 0.
+     1: istore_1                // i = 0.
+
+    // Outer-llop condition.      
+     2: iload_1                 // Push i.
+     3: aload_0                 // Push arr.
+     4: arraylength             // Replace arr with arr.length.
+     5: if_icmpge     57        // If i >= arr.length, exit the method.
+     
+     // least = i.
+     8: iload_1                 // Push i. 
+     9: istore_2                // Store i in least.
+     
+     //Initialize the inner loop.  
+    10: iload_1                 // Push i. 
+    11: iconst_1                // Push 1. 
+    12: iadd                    // Compute i + 1.
+    13: istore_3                // j = i + 1.
+    
+    // Inner-loop condition. 
+    14: iload_3                 // Push j. 
+    15: aload_0                 // Push arr. 
+    16: arraylength             // Push arr.length.
+    17: if_icmpge     37        // If j >= arr.length, begin the swap.
+    
+    // Compare arr[j] with arr[least]. 
+    20: aload_0                 // Push arr.
+    21: iload_3                 // Push j. 
+    22: iaload                  // Pop arr and j; push arr[j].
+    23: aload_0                 // Push arr.
+    24: iload_2                 // Push least. 
+    25: iaload                  // Push arr[least].
+    26: if_icmpge     31        // If arr[j] >= arr[least], skip the update.
+    
+    29: iload_3                 // Push j. 
+    30: istore_2                // least = j.
+    
+    
+    31: iinc          3, 1      // Increment local 3: j++.
+    34: goto          14        // Repeat the inner-loop condition.
+    
+    // tmp = arr[i]; slot 3 is now reused for tmp.
+    37: aload_0                 // push arr.
+    38: iload_1                 // Push i.
+    39: iaload                  // Push arr[i].
+    40: istore_3                // Store arr[i] in tmp.
+    
+    // arr[i] = arr[least].
+    41: aload_0               // Push the destination array.
+    42: iload_1               // Push destination index i.
+    43: aload_0               // Push arr for the source access.
+    44: iload_2               // Push least.
+    45: iaload                // Push arr[least].
+    46: iastore               // Pop array, index, value; store arr[i].
+    
+    // Arr[least] = tmp.
+     47: aload_0               // Push arr.
+     48: iload_2               // Push least.
+     49: iload_3               // Push tmp, not j.
+     50: iastore               // Store tmp in arr[least].
+ 
+     51: iinc          1, 1    // Increment local 1: i++.
+     54: goto          2       // Repeat the outer-loop condition.
+ 
+     57: return                // Return without a result.
